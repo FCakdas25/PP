@@ -3,18 +3,13 @@ import 'package:flutter/material.dart';
 // telas
 import 'package:app_vendas/screens/login_page.dart';
 import 'package:app_vendas/screens/home_page.dart';
-import 'package:app_vendas/screens/fornecedores_visitados.dart';
-import 'package:app_vendas/screens/itens_venda.dart';
-import 'package:app_vendas/screens/vendas_page.dart';
-import 'package:app_vendas/screens/programacao_page.dart';
-import 'package:app_vendas/pages/compras_loja_page.dart';
 
 // novas telas (categorias de compras + lista e detalhe)
 import 'package:app_vendas/screens/compras_categorias_page.dart';
 import 'package:app_vendas/screens/compras_associados_page.dart';
 import 'package:app_vendas/screens/negociacao_detalhe_page.dart';
 
-// splash novo
+// splash
 import 'package:app_vendas/screens/splash_page.dart';
 
 // opcional: imprimir base da API na inicialização
@@ -49,7 +44,7 @@ class MyApp extends StatelessWidget {
         '/home_ccb': (_) => const HomePage(),
         '/home_associados': (_) => const HomePage(),
 
-        // Fluxo COMPRAS → tela de categorias (HORTIFRUTI / GELADO / SECO)
+        // Fluxo COMPRAS → categorias (HORTIFRUTI / GELADO / SECO)
         '/compras_categorias': (_) => const ComprasCategoriasPage(),
 
         // Lista de negociações abertas por categoria
@@ -64,27 +59,7 @@ class MyApp extends StatelessWidget {
           return NegociacaoDetalhePage.fromArgs(args);
         },
 
-        // Demais rotas existentes
-        '/fornecedores': (_) => const FornecedoresVisitadosPage(),
-        '/compras_loja': (_) => const ComprasLojaPage(),
-
-        // Alias para "DADOS ASSOCIADOS" (até termos a tela dedicada)
-        '/dados_associados': (_) => const ComprasLojaPage(),
-        '/info': (_) => const ComprasLojaPage(),
-
-        '/programacao': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments;
-          final map = (args is Map<String, dynamic>) ? args : <String, dynamic>{};
-          return ProgramacaoPage.fromArgs(map);
-        },
-        '/itens': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments;
-          final map = (args is Map<String, dynamic>) ? args : <String, dynamic>{};
-          return ItensVendaPage.fromArgs(map);
-        },
-        '/vendas': (_) => const VendasPage(),
-
-        // Placeholder para "ESTOQUE NÚCLEO" (rota já pronta para o botão da Home)
+        // Placeholder para "ESTOQUE NÚCLEO"
         '/estoque_nucleo': (_) => Scaffold(
           appBar: AppBar(title: const Text('Estoque Núcleo')),
           body: const Center(child: Text('Em breve: painel de estoque do núcleo.')),
