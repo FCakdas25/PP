@@ -2,10 +2,6 @@
 
     <!-- Permissões necessárias -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-
-    <!-- (Opcional) declara que o app pode usar qualquer câmera disponível -->
-    <uses-feature android:name="android.hardware.camera.any" android:required="false"/>
 
     <application
         android:label="app_vendas"
@@ -40,7 +36,7 @@
             android:value="2" />
     </application>
 
-    <!-- Necessário para o plugin de Process Text do Flutter -->
+    <!-- (Opcional) queries; remova se não usar Process Text -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
