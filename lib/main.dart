@@ -9,6 +9,10 @@ import 'package:app_vendas/screens/compras_categorias_page.dart';
 import 'package:app_vendas/screens/compras_associados_page.dart';
 import 'package:app_vendas/screens/negociacao_detalhe_page.dart';
 
+// páginas novas
+import 'package:app_vendas/screens/logistica_page.dart';
+import 'package:app_vendas/screens/financeiro_page.dart';
+
 // splash
 import 'package:app_vendas/screens/splash_page.dart';
 
@@ -59,11 +63,15 @@ class MyApp extends StatelessWidget {
           return NegociacaoDetalhePage.fromArgs(args);
         },
 
-        // Placeholder para "ESTOQUE NÚCLEO"
+        // Placeholder antigo (se ainda precisar)
         '/estoque_nucleo': (_) => Scaffold(
           appBar: AppBar(title: const Text('Estoque Núcleo')),
           body: const Center(child: Text('Em breve: painel de estoque do núcleo.')),
         ),
+
+        // Páginas novas
+        '/logistica': (_) => const LogisticaPage(),
+        '/financeiro': (_) => const FinanceiroPage(),
       },
     );
   }

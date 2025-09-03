@@ -71,153 +71,224 @@ class _HomePageState extends State<HomePage> {
     return fallback;
   }
 
+  void _go(String route) {
+    Navigator.pushNamed(context, route);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+
+    Widget actionCard({
+      required IconData icon,
+      required String title,
+      required String subtitle,
+      required String route,
+      String? semanticsLabel,
+      String? tooltip,
+    }) {
+      return Semantics(
+        button: true,
+        label: semanticsLabel ?? title,
+        child: Tooltip(
+          message: tooltip ?? title,
+          child: InkWell(
+            onTap: () => _go(route),
+            borderRadius: BorderRadius.circular(20),
+            child: Ink(
+              decoration: BoxDecoration(
+                color: scheme.surface,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: scheme.outlineVariant.withOpacity(.6)),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                    color: Colors.black.withOpacity(.06),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(
+                        icon,
+                        size: 28,
+                        color: scheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            subtitle,
+                            style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Central de Compras'),
         centerTitle: true,
       ),
-      body: Stack(
-        children: [
-          // Marca d'água ao fundo (opcional)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Opacity(
-                opacity: 0.08,
-                child: Image.asset(
-                  'assets/WhatsApp Image 2025-08-06 at 08.03.35.jpeg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          SafeArea(
-            child: RefreshIndicator(
-              onRefresh: () async => setState(() {}),
-              child: FutureBuilder<_AssociadoInfo>(
-                future: _loadInfo(),
-                builder: (context, snap) {
-                  final loading = snap.connectionState != ConnectionState.done;
-                  final data = snap.data ??
-                      const _AssociadoInfo(
-                        nome: 'Carregando...',
-                        codigo: '—',
-                        loja: '',
-                        comprador: '',
-                      );
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async => setState(() {}),
+          child: FutureBuilder<_AssociadoInfo>(
+            future: _loadInfo(),
+            builder: (context, snap) {
+              final loading = snap.connectionState != ConnectionState.done;
+              final data = snap.data ??
+                  const _AssociadoInfo(
+                    nome: 'Carregando...',
+                    codigo: '—',
+                    loja: '',
+                    comprador: '',
+                  );
 
-                  return SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // CARD DO ASSOCIADO (TOPO)
-                        Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // CARD DO ASSOCIADO (TOPO)
+                    Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    const CircleAvatar(
-                                      radius: 24,
-                                      child: Icon(Icons.person, size: 28),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Dados do Associado',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
-                                                fontWeight:
-                                                FontWeight.w700),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            loading
-                                                ? 'Carregando...'
-                                                : data.nome,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    IconButton(
-                                      tooltip: 'Atualizar',
-                                      onPressed: () => setState(() {}),
-                                      icon: const Icon(Icons.refresh),
-                                    ),
-                                  ],
+                                const CircleAvatar(
+                                  radius: 24,
+                                  child: Icon(Icons.person, size: 28),
                                 ),
-                                const SizedBox(height: 12),
-                                _infoRow('Código', data.codigo),
-                                if (data.loja.isNotEmpty) ...[
-                                  const SizedBox(height: 6),
-                                  _infoRow('Loja', data.loja),
-                                ],
-                                if (data.comprador.isNotEmpty) ...[
-                                  const SizedBox(height: 6),
-                                  _infoRow('Comprador', data.comprador),
-                                ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Dados do Associado',
+                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        loading ? 'Carregando...' : data.nome,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context).textTheme.titleSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: 'Atualizar',
+                                  onPressed: () => setState(() {}),
+                                  icon: const Icon(Icons.refresh),
+                                ),
                               ],
                             ),
-                          ),
+                            const SizedBox(height: 12),
+                            _infoRow('Código', data.codigo),
+                            if (data.loja.isNotEmpty) ...[
+                              const SizedBox(height: 6),
+                              _infoRow('Loja', data.loja),
+                            ],
+                            if (data.comprador.isNotEmpty) ...[
+                              const SizedBox(height: 6),
+                              _infoRow('Comprador', data.comprador),
+                            ],
+                          ],
                         ),
-
-                        const SizedBox(height: 20),
-
-                        // BOTÕES (APENAS 3)
-                        _BigActionButton(
-                          label: 'COMPRAS ASSOCIADOS',
-                          icon: Icons.shopping_bag_outlined,
-                          onTap: () {
-                            // <<< CORRIGIDO: abre a tela com os 3 botões (HORTIFRUTI/GELADO/SECO)
-                            Navigator.pushNamed(context, '/compras_categorias');
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        _BigActionButton(
-                          label: 'DADOS ASSOCIADOS',
-                          icon: Icons.info_outline,
-                          onTap: () {
-                            Navigator.pushNamed(context, '/dados_associados');
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        _BigActionButton(
-                          label: 'ESTOQUE NÚCLEO',
-                          icon: Icons.inventory_2_outlined,
-                          onTap: () {
-                            Navigator.pushNamed(context, '/estoque_nucleo');
-                          },
-                        ),
-
-                        const SizedBox(height: 32),
-                      ],
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
+
+                    const SizedBox(height: 20),
+
+                    // ===== 3 CARDS PRINCIPAIS =====
+                    actionCard(
+                      icon: Icons.shopping_bag_outlined,
+                      title: 'Compras Associados',
+                      subtitle: 'Categorias: Hortifruti, Gelado e Seco',
+                      route: '/compras_categorias',
+                      semanticsLabel: 'Abrir compras por categorias do associado',
+                    ),
+                    const SizedBox(height: 12),
+
+                    actionCard(
+                      icon: Icons.local_shipping_outlined,
+                      title: 'Logística',
+                      subtitle: 'Retiradas faturadas e agendamentos',
+                      route: '/logistica',
+                      semanticsLabel: 'Abrir área de Logística',
+                    ),
+                    const SizedBox(height: 12),
+
+                    actionCard(
+                      icon: Icons.account_balance_wallet_outlined,
+                      title: 'Financeiro',
+                      subtitle: 'Boletos vencidos e a vencer',
+                      route: '/financeiro',
+                      semanticsLabel: 'Abrir área de Financeiro',
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // ===== LOGO GRANDE NO RODAPÉ =====
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Opacity(
+                        opacity: 0.85,
+                        child: Image.asset(
+                          'assets/logo_baixo.png',
+                          height: 150, // pode aumentar para 150 ou 200 se quiser
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                          semanticLabel: 'Logo da empresa',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-        ],
+        ),
       ),
     );
   }
@@ -229,9 +300,7 @@ class _HomePageState extends State<HomePage> {
           width: 120,
           child: Text(
             title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         const Text(':  '),
@@ -243,43 +312,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _BigActionButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _BigActionButton({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 64,
-      child: ElevatedButton.icon(
-        onPressed: onTap,
-        icon: Icon(icon, size: 26),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.2,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          elevation: 1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
-      ),
     );
   }
 }
